@@ -39,12 +39,12 @@
 #define YUV_COUNT 40
 #define MAX_CLIENTS 6
 
-extern "C" {
-volatile sig_atomic_t do_exit = 0;
-}
+extern "C" {                            // declaring a global variable do-exit" in the type of sig_atomic_t (the integer type of an object that can 
+volatile sig_atomic_t do_exit = 0;      // be accessed as an atomic entity even in the presence of asynchronous interrupts) without assigning any memory
+}                                       // volatile = value of the variable may be changed anytime without any action being taken by the code the compiler finds nearby
 
-void set_do_exit(int sig) {
-  do_exit = 1;
+void set_do_exit(int sig) {             // sig is the signal number to which a handling function is set
+  do_exit = 1;                          // a function to set do_exit to 1
 }
 
 /*
