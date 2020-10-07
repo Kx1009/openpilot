@@ -54,10 +54,10 @@ TODO: refactor out camera specific things from here
 struct VisionState;
 
 struct VisionClientState {
-  VisionState *s;
+  VisionState *s;                       // a pointer to data structure VisionState
   int fd;
   pthread_t thread_handle;
-  bool running;
+  bool running;                         // check if it is running ?
 };
 
 struct VisionClientStreamState {
@@ -183,7 +183,7 @@ struct VisionState {
 void* frontview_thread(void *arg) {
   int err;
   VisionState *s = (VisionState*)arg;
-  s->rhd_front = read_db_bool("IsRHD");
+  s->rhd_front = read_db_bool("IsRHD");       // set bool rhd_front to ?
 
   set_thread_name("frontview");
   err = set_realtime_priority(51);
