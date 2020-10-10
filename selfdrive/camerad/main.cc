@@ -98,7 +98,7 @@ struct VisionState {
   size_t pool_cl_globalWorkSize[2];
 
   // processing
-  TBuffer ui_tb;
+  TBuffer ui_tb;                                // Create a I/O buffer variable
   TBuffer ui_front_tb;
   TBuffer ui_wide_tb;
 
@@ -109,10 +109,10 @@ struct VisionState {
 
   // TODO: refactor for both cameras?
   Pool yuv_pool;
-  VisionBuf yuv_ion[YUV_COUNT];
+  VisionBuf yuv_ion[YUV_COUNT];                 // defined in visionbuf.h
   cl_mem yuv_cl[YUV_COUNT];
   YUVBuf yuv_bufs[YUV_COUNT];
-  FrameMetadata yuv_metas[YUV_COUNT];
+  FrameMetadata yuv_metas[YUV_COUNT];           // defined in camerad/cameras/camera_common.h
   size_t yuv_buf_size;
   int yuv_width, yuv_height;
   RGBToYUVState rgb_to_yuv_state;
