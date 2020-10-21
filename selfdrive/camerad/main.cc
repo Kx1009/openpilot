@@ -76,7 +76,7 @@ struct VisionState {
   int ion_fd;
 
   // cl state
-  cl_device_id device_id;
+  cl_device_id device_id;         // what is data type c1_device_id, c1_context, c1_program, c1_kernel
   cl_context context;
 
   cl_program prg_debayer_rear;
@@ -102,20 +102,20 @@ struct VisionState {
   TBuffer ui_front_tb;
   TBuffer ui_wide_tb;
 
-  mat3 yuv_transform;
+  mat3 yuv_transform;                           // what is data type mat3
   TBuffer *yuv_tb;
   TBuffer *yuv_front_tb;
   TBuffer *yuv_wide_tb;
 
   // TODO: refactor for both cameras?
-  Pool yuv_pool;
+  Pool yuv_pool;                                // a thread pool? memory pool?
   VisionBuf yuv_ion[YUV_COUNT];                 // defined in visionbuf.h
   cl_mem yuv_cl[YUV_COUNT];
   YUVBuf yuv_bufs[YUV_COUNT];
   FrameMetadata yuv_metas[YUV_COUNT];           // defined in camerad/cameras/camera_common.h
   size_t yuv_buf_size;
   int yuv_width, yuv_height;
-  RGBToYUVState rgb_to_yuv_state;
+  RGBToYUVState rgb_to_yuv_state;               // where RGBToYUVState defined?
 
   // for front camera recording
   Pool yuv_front_pool;
@@ -169,11 +169,11 @@ struct VisionState {
   VisionBuf wide_camera_bufs[FRAME_BUF_COUNT];
 
 
-  MultiCameraState cameras;
+  MultiCameraState cameras;           // where MultiCameraState defined?
 
-  zsock_t *terminate_pub;
+  zsock_t *terminate_pub;             // zsock_t?
 
-  PubMaster *pm;
+  PubMaster *pm;                      // PubMaster defined?
 
   pthread_mutex_t clients_lock;
   VisionClientState clients[MAX_CLIENTS];
@@ -181,7 +181,7 @@ struct VisionState {
 
 // frontview thread
 void* frontview_thread(void *arg) {
-  int err;
+  int err;                                    // error count
   VisionState *s = (VisionState*)arg;
   s->rhd_front = read_db_bool("IsRHD");       // set bool rhd_front to ?
 
@@ -212,7 +212,7 @@ void* frontview_thread(void *arg) {
       assert(err == 0);                       // assert checks the expression, if false, indicating error exists, it displays stderr and aborts the program execution
       err = clSetKernelArg(s->krnl_debayer_front, 1, sizeof(cl_mem), &s->rgb_front_bufs_cl[rgb_idx]);
       assert(err == 0);
-#ifdef QCOM2
+#ifdef QCOM2                      // if QCOM2 is defined, run
       err = clSetKernelArg(s->krnl_debayer_front, 2, s->debayer_cl_localMemSize, 0);
       assert(err == 0);
       err = clEnqueueNDRangeKernel(q, s->krnl_debayer_front, 2, NULL,
@@ -257,11 +257,11 @@ void* frontview_thread(void *arg) {
 
       // set front camera metering target
       if (face_prob > 0.4) {
-        int x_offset = s->rhd_front ? 0:s->rgb_front_width - 0.5 * s->rgb_front_height;
-        s->front_meteringbox_xmin = x_offset + (face_position[0] + 0.5) * (0.5 * s->rgb_front_height) - 72;
-        s->front_meteringbox_xmax = x_offset + (face_position[0] + 0.5) * (0.5 * s->rgb_front_height) + 72;
-        s->front_meteringbox_ymin = (face_position[1] + 0.5) * (s->rgb_front_height) - 72;
-        s->front_meteringbox_ymax = (face_position[1] + 0.5) * (s->rgb_front_height) + 72;
+        int x_offset = s->rhd_front ? 0:s->rgb_front_width - 0.5 * s->rgb_front_height;         // if rhd_front is true set x_offset = 0 else ...
+        s->front_meteringbox_xmin = x_offset + (face_position[0] + 0.5) * (0.5 * s->rgb_front_height) - 72;     // set front metering box x minimum
+        s->front_meteringbox_xmax = x_offset + (face_position[0] + 0.5) * (0.5 * s->rgb_front_height) + 72;     // set front metering box x maximum  
+        s->front_meteringbox_ymin = (face_position[1] + 0.5) * (s->rgb_front_height) - 72;                      // set front metering box y minimum
+        s->front_meteringbox_ymax = (face_position[1] + 0.5) * (s->rgb_front_height) + 72;                      // set front metering box y maximum
       } else {// use default setting if no face
         s->front_meteringbox_ymin = s->rgb_front_height * 1 / 3;
         s->front_meteringbox_ymax = s->rgb_front_height * 1;
@@ -272,7 +272,7 @@ void* frontview_thread(void *arg) {
 
     // auto exposure
     const uint8_t *bgr_front_ptr = (const uint8_t*)s->rgb_front_bufs[ui_idx].addr;
-#ifndef DEBUG_DRIVER_MONITOR
+#ifndef DEBUG_DRIVER_MONITOR        // if DEBUG_DRIVER_MONITOR is not defined, run
     if (cnt % 3 == 0)
 #endif
     {
