@@ -209,7 +209,7 @@ void* frontview_thread(void *arg) {
     cl_event debayer_event;
     if (s->cameras.front.ci.bayer) {
       err = clSetKernelArg(s->krnl_debayer_front, 0, sizeof(cl_mem), &s->front_camera_bufs_cl[buf_idx]);
-      assert(err == 0);
+      assert(err == 0);                       // assert checks the expression, if false, indicating error exists, it displays stderr and aborts the program execution
       err = clSetKernelArg(s->krnl_debayer_front, 1, sizeof(cl_mem), &s->rgb_front_bufs_cl[rgb_idx]);
       assert(err == 0);
 #ifdef QCOM2
